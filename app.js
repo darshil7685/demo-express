@@ -5,7 +5,7 @@ dotenv.config();
 const {connectToDatabase}=require('./config/db')
 const userRoutes=require('./routes/userRoutes')
 
-global.a="aa"
+global.a="aa1"
 connectToDatabase()
 const app=express()
 app.use(bodyParser.json());
