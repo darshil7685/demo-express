@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 dotenv.config();
 const {connectToDatabase}=require('./config/db')
 const userRoutes=require('./routes/userRoutes')
+const {errorHandler} = require('./middlewares/errorHandler')
 
 global.a="aa1"
 connectToDatabase()
@@ -11,6 +12,8 @@ const app=express()
 app.use(bodyParser.json());
 
 app.use('/demo/user',userRoutes)
+
+app.use(errorHandler)
 
 process.on('unhandledRejection', (reason)=>{
     console.log(reason);

@@ -1,22 +1,25 @@
 const jwt =require("jsonwebtoken")
+const {Unautorized,InternalServerError} = require("../utils/instancesCE")
 
 async function checkToken(req,res,next){
-    try{
         let token
         if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
             token = req.headers.authorization.split(' ')[1];
             
-            const decoded = jwt.verify(token, process.env.SECRET);
-            req.user=decoded
-            next()
+            jwt.verify(token, process.env.SECRET,(err,decoded)=>{
+                if(err) {
+                    console.log("err",err);
+                    return next( new Unautorized('Token expired',401,'fail'))
+                }
+                req.user=decoded
+                next()
+            });
         }
         if(!token){
-            return res.status(401).send({error_status:true,code:"AUTH_200",message:"Token not found"})
+            // return res.status(401).send({error_status:true,code:"AUTH_200",message:"Token not found"})
+            return next(new Unautorized('Token not found"',401,'error'))
         }
-    }catch(error){
-        console.log("ERROR checkToken ::",JSON.stringify(error)) 
-        return res.status(401).send({error_status:true,code:"AUTH_500"})
-        }
+        
 }
 
 async function isAdmin(req,res,next){
